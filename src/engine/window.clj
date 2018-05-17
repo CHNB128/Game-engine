@@ -1,11 +1,10 @@
-(ns game-engine-name.utils.window
+(ns engine.window
   (:import 
     (org.lwjgl BufferUtils)
     (org.lwjgl.opengl GL GL11)
     (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
 
-(defn init-window 
-  ([title width height globals]
+(defn init [title width height globals]
    (swap! globals assoc
      :width width
      :height height
@@ -49,54 +48,55 @@
      (GLFW/glfwSwapInterval 1)
      ; Make the window visible
      (GLFW/glfwShowWindow (:window @globals))))
-  ([title globals]
-   (swap! globals assoc
-     :errorCallback (GLFWErrorCallback/createPrint System/err))
 
-   (GLFW/glfwSetErrorCallback (:errorCallback @globals))
-   (when-not (GLFW/glfwInit)
-     (throw (IllegalStateException. "Unable to initialize GLFW")))
+(defn init-full-screen [title globals]
+  (swap! globals assoc
+    :errorCallback (GLFWErrorCallback/createPrint System/err))
 
-   (let [monitor (GLFW/glfwGetPrimaryMonitor)
-         vidmode (GLFW/glfwGetVideoMode monitor)
-         width   (.width  vidmode)
-         height  (.height vidmode)])
+  (GLFW/glfwSetErrorCallback (:errorCallback @globals))
+  (when-not (GLFW/glfwInit)
+    (throw (IllegalStateException. "Unable to initialize GLFW")))
 
-   (swap! globals assoc
-     :width     width
-     :height    height
-     :title     title
-     :tri-x     (/ width 2)
-     :tri-y     (/ height 2)
-     :last-time (System/currentTimeMillis))
+  (let [monitor (GLFW/glfwGetPrimaryMonitor)
+        vidmode (GLFW/glfwGetVideoMode monitor)
+        width   (.width  vidmode)
+        height  (.height vidmode)])
 
-   (GLFW/glfwDefaultWindowHints)
-   (GLFW/glfwWindowHint GLFW/GLFW_VISIBLE GLFW/GLFW_FALSE)
-   (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE)
+  (swap! globals assoc
+    :width     width
+    :height    height
+    :title     title
+    :tri-x     (/ width 2)
+    :tri-y     (/ height 2)
+    :last-time (System/currentTimeMillis))
 
-   (swap! globals assoc
-     :window (GLFW/glfwCreateWindow width height title monitor 0))
+  (GLFW/glfwDefaultWindowHints)
+  (GLFW/glfwWindowHint GLFW/GLFW_VISIBLE GLFW/GLFW_FALSE)
+  (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE)
 
-   (when (= (:window @globals) nil)
-     (throw (RuntimeException. "Failed to create the GLFW window")))
+  (swap! globals assoc
+    :window (GLFW/glfwCreateWindow width height title monitor 0))
 
-   (swap! globals assoc
-     :keyCallback
-     (proxy [GLFWKeyCallback] []
-       (invoke [window key scancode action mods]
-         (when (and (= key GLFW/GLFW_KEY_ESCAPE)
-                   (= action GLFW/GLFW_RELEASE))
-           (GLFW/glfwSetWindowShouldClose (:window @globals) true)))))
-   (GLFW/glfwSetKeyCallback (:window @globals) (:keyCallback @globals))
+  (when (= (:window @globals) nil)
+    (throw (RuntimeException. "Failed to create the GLFW window")))
 
-   (GLFW/glfwMakeContextCurrent (:window @globals))
-   (GLFW/glfwSwapInterval 1)
-   (GLFW/glfwShowWindow (:window @globals))))
+  (swap! globals assoc
+    :keyCallback
+    (proxy [GLFWKeyCallback] []
+      (invoke [window key scancode action mods]
+        (when (and (= key GLFW/GLFW_KEY_ESCAPE)
+                  (= action GLFW/GLFW_RELEASE))
+          (GLFW/glfwSetWindowShouldClose (:window @globals) true)))))
+  (GLFW/glfwSetKeyCallback (:window @globals) (:keyCallback @globals))
 
-(defn destroy-window 
+  (GLFW/glfwMakeContextCurrent (:window @globals))
+  (GLFW/glfwSwapInterval 1)
+  (GLFW/glfwShowWindow (:window @globals)))
+
+(defn close
   ^{:doc 
     "Destroy specifited window
-     :globals game-engine-name.utils.vars.globals-template"}
+     :globals engine.utils.vars.globals-template"}
   [{keyCallback :keyCallback errorCallback :errorCallback window :window}]
   (.free keyCallback)
   (.free errorCallback)

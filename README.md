@@ -1,11 +1,11 @@
-# game_engine_name
+# engine
 
 How to get LWJGL3 working with Leiningen & Clojure.
 
 *Now with automatic downloads!*
 
 In [this pull
-request](https://github.com/rogerallen/game_engine_name/pull/8)
+request](https://github.com/rogerallen/engine/pull/8)
 [euccastro](https://github.com/euccastro) provides an elegant way to
 download the native libraries easily.  While I have some concern that
 this might break 32-bit compatibility, it would seem that there is
@@ -19,8 +19,8 @@ libraries & version you want in a very simple manner.
 If you want to create your own application using Clojure & LWJGL, here's what I did:
 
 ```bash
-> lein new app game_engine_name
-> cd game_engine_name
+> lein new app engine
+> cd engine
 ```
 
 See project.clj and the source code for more info.  Hopefully it is easy to follow.
@@ -61,9 +61,9 @@ OpenGL version: 2.1 NVIDIA-10.4.2 310.41.35f01
 In emacs, use `M-x cider-connect` and use port 7888 to connect.  A repl pane shoudl open up.  Now, you can adjust the code live, for example, adjust the angle of the triangle.
 
 ```
-user> (in-ns 'game-engine-name.alpha)
-#namespace[game-engine-name.alpha]
-game-engine-name.alpha> (swap! globals assoc :angle 0.0)
+user> (in-ns 'engine.alpha)
+#namespace[engine.alpha]
+engine.alpha> (swap! globals assoc :angle 0.0)
 ```
 
 Please note that you may need to adjust the cider-nrepl package version to match your local install.  It changes often.
@@ -75,13 +75,13 @@ First create the 'uberjar'
 ```bash
 > lein uberjar
 ...
-Created .../game_engine_name/target/game_engine_name-0.4.0-standalone.jar
+Created .../engine/target/engine-0.4.0-standalone.jar
 ```
 
 Then you can run it with a commandline.
 
 ```bash
-> java -jar target/game_engine_name-0.4.0-SNAPSHOT-standalone.jar
+> java -jar target/engine-0.4.0-SNAPSHOT-standalone.jar
 ```
 
 ## Notes

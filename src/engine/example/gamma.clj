@@ -1,4 +1,4 @@
-(ns game-engine-name.gamma
+(ns engine.gamma
   (:import (org.lwjgl BufferUtils)
            (org.lwjgl.opengl GL GL11)
            (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))

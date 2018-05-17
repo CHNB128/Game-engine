@@ -1,8 +1,8 @@
-(ns game-engine-name.core
-  (:require [game-engine-name.alpha :as alpha]
-            [game-engine-name.beta  :as beta]
-            [game-engine-name.gamma :as gamma])
-            ;;[game-engine-name.omega :as omega]
+(ns engine.core
+  (:require [engine.alpha :as alpha]
+            [engine.beta  :as beta]
+            [engine.gamma :as gamma])
+            ;;[engine.omega :as omega]
   (:import (org.lwjgl Version))
   (:gen-class))
 

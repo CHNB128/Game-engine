@@ -1,4 +1,4 @@
-(ns game-engine-name.utils.3d.model-loader
+(ns engine.utils.3d.model-loader
   (:require [clojure.java.io :refer :all]
             [clojure.string :as str]
             [clojure.core.matrix 

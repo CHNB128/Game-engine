@@ -1,4 +1,4 @@
-(ns game-engine-name.omega
+(ns engine.omega
   (:import
    (java.nio FloatBuffer IntBuffer)
    (java.util List)

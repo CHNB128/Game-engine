@@ -1,4 +1,4 @@
-(ns game-engine-name.sample.3d-sqare
+(ns engine.sample.3d-sqare
   (:import 
     (org.lwjgl BufferUtils)
     (org.lwjgl.opengl GL GL11)

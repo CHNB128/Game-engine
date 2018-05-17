@@ -1,4 +1,4 @@
-(ns game-engine-name.3d
+(ns engine.3d
   (:import 
     (org.lwjgl BufferUtils)
     (org.lwjgl.opengl GL GL11)

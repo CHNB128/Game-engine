@@ -77,7 +77,7 @@
      [net.mikera/vectorz-clj "0.47.0"]]
    (lwjgl-deps-with-natives)))
 
-(defproject game_engine_name "0.4.0"
+(defproject engine "0.4.0"
   :description "FIXME"
   :url "FIXME"
   :license {:name "FIXME"
@@ -85,4 +85,4 @@
   :dependencies ~all-dependencies
   :min-lein-version "2.1.0"
   :jvm-opts ^:replace ~(jvm-opts)
-  :main game-engine-name.core)
+  :main engine.core)

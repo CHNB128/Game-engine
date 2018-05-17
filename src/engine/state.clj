@@ -1,4 +1,4 @@
-(ns game-engine-name.utils.vars
+(ns engine.state
   (:import 
     (org.lwjgl BufferUtils)))
 
@@ -12,3 +12,7 @@
    :last-time     0
    :mouse-x-buf   (BufferUtils/createDoubleBuffer 1)
    :mouse-y-buf   (BufferUtils/createDoubleBuffer 1)})
+
+(defn init
+  []
+  global-template)
