@@ -1,2 +1,5 @@
-./.vscode
-/target
+*
+!*.clj
+!*.cljs
+!/src
+!/lib
