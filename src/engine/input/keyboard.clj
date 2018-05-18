@@ -15,7 +15,7 @@
 (defn key-pressed?
   ^{:doc 
     "Check in key press for specificated window
-     :window window value from globals
+     :window window value from global
      :key keyword from input.keyboard/key-map"} 
   [window key]
   (= (GLFW/glfwGetKey window (key key-map) GLFW/GLFW_PRESS)))

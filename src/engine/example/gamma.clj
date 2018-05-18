@@ -8,7 +8,7 @@
 ;; fullscreen spinning, moving triangle in OpenGL 1.1
 ;; red point of the triangle is supposed to point to the mouse
 
-(defonce globals
+(defonce global
   (atom {:errorCallback nil
          :keyCallback   nil
          :window        nil
@@ -26,9 +26,9 @@
 (defn init-fullscreen-window
   [title]
 
-  (swap! globals assoc
+  (swap! global assoc
          :errorCallback (GLFWErrorCallback/createPrint System/err))
-  (GLFW/glfwSetErrorCallback (:errorCallback @globals))
+  (GLFW/glfwSetErrorCallback (:errorCallback @global))
   (when-not (GLFW/glfwInit)
     (throw (IllegalStateException. "Unable to initialize GLFW")))
 
@@ -37,7 +37,7 @@
         width   (.width  vidmode)
         height  (.height vidmode)]
 
-    (swap! globals assoc
+    (swap! global assoc
            :width     width
            :height    height
            :title     title
@@ -48,23 +48,23 @@
     (GLFW/glfwDefaultWindowHints)
     (GLFW/glfwWindowHint GLFW/GLFW_VISIBLE GLFW/GLFW_FALSE)
     (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE)
-    (swap! globals assoc
+    (swap! global assoc
            :window (GLFW/glfwCreateWindow width height title monitor 0))
-    (when (= (:window @globals) nil)
+    (when (= (:window @global) nil)
       (throw (RuntimeException. "Failed to create the GLFW window")))
 
-    (swap! globals assoc
+    (swap! global assoc
            :keyCallback
            (proxy [GLFWKeyCallback] []
              (invoke [window key scancode action mods]
                (when (and (= key GLFW/GLFW_KEY_ESCAPE)
                           (= action GLFW/GLFW_RELEASE))
-                 (GLFW/glfwSetWindowShouldClose (:window @globals) true)))))
-    (GLFW/glfwSetKeyCallback (:window @globals) (:keyCallback @globals))
+                 (GLFW/glfwSetWindowShouldClose (:window @global) true)))))
+    (GLFW/glfwSetKeyCallback (:window @global) (:keyCallback @global))
 
-    (GLFW/glfwMakeContextCurrent (:window @globals))
+    (GLFW/glfwMakeContextCurrent (:window @global))
     (GLFW/glfwSwapInterval 1)
-    (GLFW/glfwShowWindow (:window @globals))))
+    (GLFW/glfwShowWindow (:window @global))))
 
 (defn init-gl
   []
@@ -72,14 +72,14 @@
   (println "OpenGL version:" (GL11/glGetString GL11/GL_VERSION))
   (GL11/glClearColor 0.0 0.0 0.0 0.0)
   (GL11/glMatrixMode GL11/GL_PROJECTION)
-  (GL11/glOrtho 0.0 (:width @globals)
-                (:height @globals) 0.0 ;; Y is 0 at the top to match mouse coords
+  (GL11/glOrtho 0.0 (:width @global)
+                (:height @global) 0.0 ;; Y is 0 at the top to match mouse coords
                 -1.0 1.0)
   (GL11/glMatrixMode GL11/GL_MODELVIEW))
 
 (defn draw
   []
-  (let [{:keys [tri-x tri-y angle]} @globals]
+  (let [{:keys [tri-x tri-y angle]} @global]
     (GL11/glClear (bit-or GL11/GL_COLOR_BUFFER_BIT  GL11/GL_DEPTH_BUFFER_BIT))
 
     (GL11/glLoadIdentity)
@@ -105,7 +105,7 @@
 
 (defn keyboard
   []
-  (let [{:keys [tri-x tri-y window]} @globals
+  (let [{:keys [tri-x tri-y window]} @global
         up (or1 (key-pressed? window GLFW/GLFW_KEY_UP)
                 (key-pressed? window GLFW/GLFW_KEY_W))
         down (or1 (key-pressed? window GLFW/GLFW_KEY_DOWN)
@@ -119,32 +119,32 @@
         dy (+ (* up -1.0) (* down 1.0))
         tri-x (+ tri-x dx)
         tri-y (+ tri-y dy)]
-    (swap! globals assoc :tri-x tri-x :tri-y tri-y)))
+    (swap! global assoc :tri-x tri-x :tri-y tri-y)))
 
 (defn mouse
   []
-  (let [{:keys [window mouse-x-buf mouse-y-buf]} @globals]
+  (let [{:keys [window mouse-x-buf mouse-y-buf]} @global]
     (GLFW/glfwGetCursorPos window mouse-x-buf mouse-y-buf)))
 
-(defn update-globals
+(defn update-global
   []
-  (let [{:keys [width height tri-x tri-y mouse-x-buf mouse-y-buf]} @globals
+  (let [{:keys [width height tri-x tri-y mouse-x-buf mouse-y-buf]} @global
         cur-time (System/currentTimeMillis)
         mouse-x (.get mouse-x-buf 0)
         mouse-y (.get mouse-y-buf 0)
         dx (- mouse-x tri-x)
         dy (- mouse-y tri-y)
         next-angle (+ 90.0 (* (/ -180.0 Math/PI) (Math/atan2 dx dy)))]
-    (swap! globals assoc :angle next-angle :last-time cur-time)))
+    (swap! global assoc :angle next-angle :last-time cur-time)))
 
 (defn main-loop
   []
-  (while (not (GLFW/glfwWindowShouldClose (:window @globals)))
+  (while (not (GLFW/glfwWindowShouldClose (:window @global)))
     (keyboard)
     (mouse)
-    (update-globals)
+    (update-global)
     (draw)
-    (GLFW/glfwSwapBuffers (:window @globals))
+    (GLFW/glfwSwapBuffers (:window @global))
     (GLFW/glfwPollEvents)))
 
 (defn main
@@ -157,8 +157,8 @@
     (init-fullscreen-window "gamma")
     (init-gl)
     (main-loop)
-    (.free (:keyCallback @globals))
-    (.free (:errorCallback @globals))
-    (GLFW/glfwDestroyWindow (:window @globals))
+    (.free (:keyCallback @global))
+    (.free (:errorCallback @global))
+    (GLFW/glfwDestroyWindow (:window @global))
     (finally
       (GLFW/glfwTerminate))))

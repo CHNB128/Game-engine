@@ -63,7 +63,7 @@ In emacs, use `M-x cider-connect` and use port 7888 to connect.  A repl pane sho
 ```
 user> (in-ns 'engine.alpha)
 #namespace[engine.alpha]
-engine.alpha> (swap! globals assoc :angle 0.0)
+engine.alpha> (swap! global assoc :angle 0.0)
 ```
 
 Please note that you may need to adjust the cider-nrepl package version to match your local install.  It changes often.

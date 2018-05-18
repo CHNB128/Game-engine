@@ -7,7 +7,7 @@
 
 ;; ======================================================================
 ;; spinning triangle in OpenGL 3.2
-(defonce globals 
+(defonce global 
   (atom 
     {:errorCallback nil
      :window        nil
@@ -31,15 +31,15 @@
      
 (defn init-window [width height title]
 
-  (swap! globals assoc
+  (swap! global assoc
          :width     width
          :height    height
          :title     title
          :last-time (System/currentTimeMillis))
 
-  (swap! globals assoc
+  (swap! global assoc
          :errorCallback (GLFWErrorCallback/createPrint System/err))
-  (GLFW/glfwSetErrorCallback (:errorCallback @globals))
+  (GLFW/glfwSetErrorCallback (:errorCallback @global))
   (when-not (GLFW/glfwInit)
     (throw (IllegalStateException. "Unable to initialize GLFW")))
 
@@ -50,28 +50,28 @@
   (GLFW/glfwWindowHint GLFW/GLFW_OPENGL_FORWARD_COMPAT GL11/GL_TRUE)
   (GLFW/glfwWindowHint GLFW/GLFW_CONTEXT_VERSION_MAJOR 3)
   (GLFW/glfwWindowHint GLFW/GLFW_CONTEXT_VERSION_MINOR 2)
-  (swap! globals assoc
+  (swap! global assoc
          :window (GLFW/glfwCreateWindow width height title 0 0))
-  (when (= (:window @globals) nil)
+  (when (= (:window @global) nil)
     (throw (RuntimeException. "Failed to create the GLFW window")))
 
-  (swap! globals assoc
+  (swap! global assoc
          :keyCallback
          (proxy [GLFWKeyCallback] []
            (invoke [window key scancode action mods]
              (when (and (= key GLFW/GLFW_KEY_ESCAPE)
                         (= action GLFW/GLFW_RELEASE))
-               (GLFW/glfwSetWindowShouldClose (:window @globals) true)))))
-  (GLFW/glfwSetKeyCallback (:window @globals) (:keyCallback @globals))
+               (GLFW/glfwSetWindowShouldClose (:window @global) true)))))
+  (GLFW/glfwSetKeyCallback (:window @global) (:keyCallback @global))
 
   (let [vidmode (GLFW/glfwGetVideoMode (GLFW/glfwGetPrimaryMonitor))]
     (GLFW/glfwSetWindowPos
-     (:window @globals)
+     (:window @global)
      (/ (- (.width vidmode) width) 2)
      (/ (- (.height vidmode) height) 2))
-    (GLFW/glfwMakeContextCurrent (:window @globals))
+    (GLFW/glfwMakeContextCurrent (:window @global))
     (GLFW/glfwSwapInterval 1)
-    (GLFW/glfwShowWindow (:window @globals))))
+    (GLFW/glfwShowWindow (:window @global))))
 
 #_(defn init-window
    [width height title]
@@ -80,7 +80,7 @@
                                 (.withForwardCompatible true)
                                 (.withProfileCore true))
          current-time-millis (System/currentTimeMillis)]
-     (def globals (ref {:width width
+     (def global (ref {:width width
                         :height height
                         :title title
                         :angle 0.0
@@ -148,7 +148,7 @@
         _ (GL15/glBindBuffer GL15/GL_ELEMENT_ARRAY_BUFFER 0)]
         ;;_ (println "init-buffers errors?" (GL11/glGetError))
         
-    (swap! globals assoc
+    (swap! global assoc
            :vao-id vao-id
            :vbo-id vbo-id
            :vboc-id vboc-id
@@ -209,7 +209,7 @@
         angle-loc (GL20/glGetUniformLocation p-id "in_Angle")]
         ;;_ (println "init-shaders errors?" (GL11/glGetError))
         
-    (swap! globals assoc
+    (swap! global assoc
            :vs-id vs-id
            :fs-id fs-id
            :p-id p-id
@@ -217,15 +217,15 @@
 
 (defn init-gl
   []
-  (let [{:keys [width height]} @globals]
+  (let [{:keys [width height]} @global]
     (GL/createCapabilities)
     (println "OpenGL version:" (GL11/glGetString GL11/GL_VERSION))
     (GL11/glClearColor 0.0 0.0 0.0 0.0)
     (GL11/glViewport 0 0 width height)
     (init-buffers)
     (init-shaders)))
-    ;;(print "@globals")
-    ;;(pprint/pprint @globals)
+    ;;(print "@global")
+    ;;(pprint/pprint @global)
     ;;(println "")
     
 
@@ -233,7 +233,7 @@
   []
   (let [{:keys [width height angle angle-loc
                 p-id vao-id vboi-id
-                indices-count]} @globals
+                indices-count]} @global
                 w2 (/ width 2.0)
                 h2 (/ height 2.0)]
     (GL11/glClear (bit-or GL11/GL_COLOR_BUFFER_BIT  GL11/GL_DEPTH_BUFFER_BIT))
@@ -260,23 +260,23 @@
     ;;(println "draw errors?" (GL11/glGetError))
     
 
-(defn update-globals
+(defn update-global
   []
-  (let [{:keys [width height angle last-time]} @globals
+  (let [{:keys [width height angle last-time]} @global
         cur-time (System/currentTimeMillis)
         delta-time (- cur-time last-time)
         next-angle (+ (* delta-time 0.05) angle)
         next-angle (if (>= next-angle 360.0)
                      (- next-angle 360.0)
                      next-angle)]
-    (swap! globals assoc
+    (swap! global assoc
            :angle next-angle
            :last-time cur-time)
     (draw)))
 
 (defn destroy-gl
   []
-  (let [{:keys [p-id vs-id fs-id vao-id vbo-id vboc-id vboi-id]} @globals]
+  (let [{:keys [p-id vs-id fs-id vao-id vbo-id vboc-id vboi-id]} @global]
     ;; Delete the shaders
     (GL20/glUseProgram 0)
     (GL20/glDetachShader p-id vs-id)
@@ -312,10 +312,10 @@
 
 (defn main-loop
   []
-  (while (not (GLFW/glfwWindowShouldClose (:window @globals)))
-    (update-globals)
+  (while (not (GLFW/glfwWindowShouldClose (:window @global)))
+    (update-global)
     (draw)
-    (GLFW/glfwSwapBuffers (:window @globals))
+    (GLFW/glfwSwapBuffers (:window @global))
     (GLFW/glfwPollEvents)))
 
 (defn main
@@ -326,8 +326,8 @@
     (init-gl)
     (main-loop)
     (destroy-gl)
-    (.free (:keyCallback @globals))
-    (.free (:errorCallback @globals))
-    (GLFW/glfwDestroyWindow (:window @globals))
+    (.free (:keyCallback @global))
+    (.free (:errorCallback @global))
+    (GLFW/glfwDestroyWindow (:window @global))
     (finally
       (GLFW/glfwTerminate))))
