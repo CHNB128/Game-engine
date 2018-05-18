@@ -1,5 +1,7 @@
-*
+target
+.vscode
+.ide
+*.*
 !*.clj
 !*.cljs
-!/src
-!/lib
+!*.md
