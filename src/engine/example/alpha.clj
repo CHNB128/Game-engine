@@ -11,7 +11,7 @@
                         :height        0
                         :title         "none"
                         :angle         0.0
-                        :last-time     0}))
+                        :delta-time     0}))
 
 (defn init-window
   [width height title]
@@ -20,7 +20,7 @@
          :width     width
          :height    height
          :title     title
-         :last-time (System/currentTimeMillis))
+         :delta-time (System/currentTimeMillis))
 
   (swap! global assoc
          :errorCallback (GLFWErrorCallback/createPrint System/err))
@@ -96,7 +96,7 @@
                      next-angle)]
     (swap! global assoc
            :angle next-angle
-           :last-time cur-time)))
+           :delta-time cur-time)))
 
 (defn main-loop
   []

@@ -7,7 +7,7 @@
    :linux    []
    :windows  []})
 
-(defn jvm-opts[]
+(defn jvm-opts []
   "Return a complete vector of jvm-opts for the current os."
   (let [os (leiningen.core.eval/get-os)]
     (vec (set (concat (get JVM-OPTS :common)
@@ -19,7 +19,7 @@
 (def LWJGL_VERSION "3.1.5")
 
 ;; Edit this to add/remove packages.
-(def LWJGL_MODULES 
+(def LWJGL_MODULES
   ["lwjgl"
    "lwjgl-assimp"
    "lwjgl-bgfx"
@@ -56,24 +56,25 @@
 (def LWJGL_PLATFORMS ["linux" "macos" "windows"])
 
 ;; These packages don't have any associated native ones.
-(def no-natives? 
+(def no-natives?
   #{"lwjgl-egl" "lwjgl-jawt" "lwjgl-odbc"
     "lwjgl-opencl" "lwjgl-vulkan"})
 
 (defn lwjgl-deps-with-natives []
   (apply concat
-    (for [m LWJGL_MODULES]
-      (let [prefix [(symbol LWJGL_NS m) LWJGL_VERSION]]
-        (into [prefix]
-          (if (no-natives? m)
-            []
-            (for [p LWJGL_PLATFORMS]
-              (into prefix [:classifier (str "natives-" p)
-                            :native-prefix ""]))))))))
+         (for [m LWJGL_MODULES]
+           (let [prefix [(symbol LWJGL_NS m) LWJGL_VERSION]]
+             (into [prefix]
+                   (if (no-natives? m)
+                     []
+                     (for [p LWJGL_PLATFORMS]
+                       (into prefix [:classifier (str "natives-" p)
+                                     :native-prefix ""]))))))))
 
 (def all-dependencies
   (into ;; Add your non-LWJGL dependencies here
    '[[org.clojure/clojure "1.8.0"]
+     [prismatic/schema "1.1.9"]
      [net.mikera/vectorz-clj "0.47.0"]]
    (lwjgl-deps-with-natives)))
 

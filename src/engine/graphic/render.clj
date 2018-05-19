@@ -1,4 +1,4 @@
-(ns engine.render
+(ns engine.graphic.render
   (:import
    (org.lwjgl BufferUtils)
    (org.lwjgl.opengl GL GL11)
@@ -6,8 +6,13 @@
 
 (defn init-gl
   []
-  ; (GL/createCapabilities)
-  (println "OpenGL version:" (GL11/glGetString GL11/GL_VERSION))
+  ; This line is critical for LWJGL's interoperation with GLFW's
+  ; OpenGL context, or any context that is managed externally.
+  ; LWJGL detects the context that is current in the current thread,
+  ; creates the GLCapabilities instance and makes the OpenGL
+  ; bindings available for use.
+  (GL/createCapabilities)
+  ; (println "OpenGL version:" (GL11/glGetString GL11/GL_VERSION))
   (GL11/glClearColor 0.0 0.0 0.0 0.0)
   ; Set background depth to farthest
   (GL11/glClearDepth 1.0)
@@ -30,5 +35,9 @@
   []
   (init-gl))
 
-(defn reload
-  [])
+(defn rerender
+  [global]
+  ; clear the framebuffer
+  (GL11/glClear (bit-or GL11/GL_COLOR_BUFFER_BIT GL11/GL_DEPTH_BUFFER_BIT))
+  ; swap the color buffers
+  (GLFW/glfwSwapBuffers (:window @global)))

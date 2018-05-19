@@ -16,7 +16,7 @@
      :width         0
      :title         "none"
      :angle         0.0
-     :last-time     0
+     :delta-time     0
      ;; geom ids
      :vao-id        0
      :vbo-id        0
@@ -35,7 +35,7 @@
          :width     width
          :height    height
          :title     title
-         :last-time (System/currentTimeMillis))
+         :delta-time (System/currentTimeMillis))
 
   (swap! global assoc
          :errorCallback (GLFWErrorCallback/createPrint System/err))
@@ -84,7 +84,7 @@
                         :height height
                         :title title
                         :angle 0.0
-                        :last-time current-time-millis
+                        :delta-time current-time-millis
                        ;; geom ids
                         :vao-id 0
                         :vbo-id 0
@@ -271,7 +271,7 @@
                      next-angle)]
     (swap! global assoc
            :angle next-angle
-           :last-time cur-time)
+           :delta-time cur-time)
     (draw)))
 
 (defn destroy-gl

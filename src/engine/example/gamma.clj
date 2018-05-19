@@ -1,4 +1,4 @@
-(ns engine.gamma
+(ns engine.example.gamma
   (:import (org.lwjgl BufferUtils)
            (org.lwjgl.opengl GL GL11)
            (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
@@ -18,10 +18,9 @@
          :tri-x         0
          :tri-y         0
          :angle         0.0
-         :last-time     0
+         :delta-time     0
          :mouse-x-buf   (BufferUtils/createDoubleBuffer 1)
          :mouse-y-buf   (BufferUtils/createDoubleBuffer 1)}))
-         
 
 (defn init-fullscreen-window
   [title]
@@ -43,7 +42,7 @@
            :title     title
            :tri-x     (/ width 2)
            :tri-y     (/ height 2)
-           :last-time (System/currentTimeMillis))
+           :delta-time (System/currentTimeMillis))
 
     (GLFW/glfwDefaultWindowHints)
     (GLFW/glfwWindowHint GLFW/GLFW_VISIBLE GLFW/GLFW_FALSE)
@@ -94,7 +93,7 @@
       (GL11/glVertex2i -50 86.6)
       (GL11/glColor3f 0.0 0.0 1.0)
       (GL11/glVertex2i -50 -86.6))
-      
+
     (GL11/glEnd)))
 
 (defn key-pressed?
@@ -135,7 +134,7 @@
         dx (- mouse-x tri-x)
         dy (- mouse-y tri-y)
         next-angle (+ 90.0 (* (/ -180.0 Math/PI) (Math/atan2 dx dy)))]
-    (swap! global assoc :angle next-angle :last-time cur-time)))
+    (swap! global assoc :angle next-angle :delta-time cur-time)))
 
 (defn main-loop
   []

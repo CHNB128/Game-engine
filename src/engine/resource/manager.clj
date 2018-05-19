@@ -1,5 +1,5 @@
-(ns engine.resouce-manager)
+(ns engine.resource.manager)
 
 (defn init
-  [:key [global resources]]
+  [global resources]
   (swap! global assoc :resources resources))
