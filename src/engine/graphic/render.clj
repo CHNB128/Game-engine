@@ -1,4 +1,4 @@
-(ns engine.render
+(ns engine.graphic.render
   (:import
    (org.lwjgl BufferUtils)
    (org.lwjgl.opengl GL GL11)

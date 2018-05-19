@@ -1,3 +1,8 @@
 (def a {:a 15})
 (def s :a)
 (s a)
+(init {:window-type :fullscreen :title "asd" :processor (fn [e] (prn "test"))})
+(use 'engine.example.gamma)
+(main)
+fn
+clojre.core/fn

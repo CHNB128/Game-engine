@@ -66,38 +66,38 @@
   (let [monitor (GLFW/glfwGetPrimaryMonitor)
         vidmode (GLFW/glfwGetVideoMode monitor)
         width   (.width  vidmode)
-        height  (.height vidmode)])
+        height  (.height vidmode)]
 
-  (swap! global assoc
-         :width     width
-         :height    height
-         :title     title
-         :tri-x     (/ width 2)
-         :tri-y     (/ height 2)
-         :last-time (System/currentTimeMillis))
+    (swap! global assoc
+           :width     width
+           :height    height
+           :title     title
+           :tri-x     (/ width 2)
+           :tri-y     (/ height 2)
+           :last-time (System/currentTimeMillis))
 
-  (GLFW/glfwDefaultWindowHints)
-  (GLFW/glfwWindowHint GLFW/GLFW_VISIBLE GLFW/GLFW_FALSE)
-  (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE)
+    (GLFW/glfwDefaultWindowHints)
+    (GLFW/glfwWindowHint GLFW/GLFW_VISIBLE GLFW/GLFW_FALSE)
+    (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE)
 
-  (swap! global assoc
-         :window (GLFW/glfwCreateWindow width height title monitor 0))
+    (swap! global assoc
+           :window (GLFW/glfwCreateWindow width height title monitor 0))
 
-  (when (= (:window @global) nil)
-    (throw (RuntimeException. "Failed to create the GLFW window")))
+    (when (= (:window @global) nil)
+      (throw (RuntimeException. "Failed to create the GLFW window")))
 
-  (swap! global assoc
-         :keyCallback
-         (proxy [GLFWKeyCallback] []
-           (invoke [window key scancode action mods]
-             (when (and (= key GLFW/GLFW_KEY_ESCAPE)
-                        (= action GLFW/GLFW_RELEASE))
-               (GLFW/glfwSetWindowShouldClose (:window @global) true)))))
-  (GLFW/glfwSetKeyCallback (:window @global) (:keyCallback @global))
+    (swap! global assoc
+           :keyCallback
+           (proxy [GLFWKeyCallback] []
+             (invoke [window key scancode action mods]
+               (when (and (= key GLFW/GLFW_KEY_ESCAPE
+                             (= action GLFW/GLFW_RELEASE)))
+                 (GLFW/glfwSetWindowShouldClose (:window @global) true)))))
+    (GLFW/glfwSetKeyCallback (:window @global) (:keyCallback @global))
 
-  (GLFW/glfwMakeContextCurrent (:window @global))
-  (GLFW/glfwSwapInterval 1)
-  (GLFW/glfwShowWindow (:window @global)))
+    (GLFW/glfwMakeContextCurrent (:window @global))
+    (GLFW/glfwSwapInterval 1)
+    (GLFW/glfwShowWindow (:window @global))))
 
 (defn close
   ^{:doc

@@ -1,4 +1,4 @@
-(ns engine.utils.input.mouse
+(ns engine.input.mouse
   (:import
    (org.lwjgl.glfw GLFW)))
 

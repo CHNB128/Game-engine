@@ -1,6 +1,6 @@
-(ns engine.utils.input.keyboard
-  (:import 
-    (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
+(ns engine.input.keyboard
+  (:import
+   (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
 
 (defonce key-map
   {:up GLFW/GLFW_KEY_UP
@@ -13,12 +13,9 @@
    :d GLFW/GLFW_KEY_D})
 
 (defn key-pressed?
-  ^{:doc 
+  ^{:doc
     "Check in key press for specificated window
      :window window value from global
-     :key keyword from input.keyboard/key-map"} 
+     :key keyword from input.keyboard/key-map"}
   [window key]
   (= (GLFW/glfwGetKey window (key key-map) GLFW/GLFW_PRESS)))
-
-
-  
