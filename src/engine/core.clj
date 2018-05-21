@@ -1,7 +1,7 @@
 (ns engine.core
   (:import
    (org.lwjgl BufferUtils)
-   (org.lwjgl.glfw GLFW))
+   (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback))
   (:require [schema.core :as s]
             [engine.window :as window]
             [engine.graphic.render :as render]
@@ -18,15 +18,11 @@
     :window-width 0
     :window-title "none"
     :delta-time 0
-    :main-loop nil
+    :main-loop (fn [g])
     :mouse-buffer
     {:x (BufferUtils/createDoubleBuffer 1)
      :y (BufferUtils/createDoubleBuffer 1)}
     :resources nil}))
-
-(defn update-delta-time
-  [global]
-  (swap! global assoc :delta-time (System/currentTimeMillis)))
 
 (defn init
   [context]
@@ -37,34 +33,32 @@
   ;   (s/optional-kel :height) s/Num
   ;   (s/optional-kel :title) s/Str}
   ;  context)
-  (let [{window-type :window-type
-         remote-window :remote-window
-         title :title
+  (let [{remote-window :remote-window
+         title :title  
          height :height
          width :width
          processor :processor
          resources :resources} context]
-    (swap! global assoc :main-loop processor)
-    (cond
-      (= window-type :fullscreen)
-      (window/init {:title title})
-      (= window-type :windowed)
-      (window/init {:title title :height height :width width})
-      (= window-type :remote)
-      (window/init {:title title :specified-window remote-window}))
-    (resource-manager/init global resources)
-    (render/init global)))
+    (swap! global assoc
+          :main-loop processor
+          :title title)))
+
+(defn main-loop [] ((:main-loop @global) global))
 
 (defn loop!
-  [global]
-  (while-not (GLFW/glfwWindowShouldClose (:window @global))
-             (mouse/update-mouse-position global)
-             ((:processor @global))
-             (render/rerender)
-             (update-delta-time global)
-    ; activate event pool
-             (GLFW/glfwPollEvents)))
-
-(defn exit
   []
+  (window/init-windowed global 500 500 "test")
+  (render/init global)
+  (while (not (GLFW/glfwWindowShouldClose (:window @global)))
+    (mouse/update-mouse-position global)
+    (main-loop)
+    (render/rerender global)
+    (render/update-delta-time global)
+    ; update event pool
+    (GLFW/glfwPollEvents)))
+
+(defn stop
+  []
+  (.free (:keyCallback @global))
+  (.free (:errorCallback @global))
   (window/close @global))

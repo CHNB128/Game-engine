@@ -1,10 +1,10 @@
 (ns engine.window
   (:import
    (org.lwjgl BufferUtils)
-   (org.lwjgl.opengl GL GL11)
    (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
+; TODO: rewrite
 
-(defmacro configure-GLFW
+(defn configure-GLFW
   []
   ; optional, the current window hints are already the default
   (GLFW/glfwDefaultWindowHints)
@@ -13,52 +13,71 @@
   ; the window will be resizable
   (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE))
 
+(defn init-windowed
+  [global width height title]
+
+  (swap! global assoc
+         :width     width
+         :height    height
+         :title     title
+         :delta-time (System/currentTimeMillis))
+
+  (swap! global assoc
+         :errorCallback (GLFWErrorCallback/createPrint System/err))
+  (GLFW/glfwSetErrorCallback (:errorCallback @global))
+  (when-not (GLFW/glfwInit)
+    (throw (IllegalStateException. "Unable to initialize GLFW")))
+
+  (GLFW/glfwDefaultWindowHints)
+  (GLFW/glfwWindowHint GLFW/GLFW_VISIBLE GLFW/GLFW_FALSE)
+  (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE)
+  (swap! global assoc
+         :window (GLFW/glfwCreateWindow width height title 0 0))
+  (when (= (:window @global) nil)
+    (throw (RuntimeException. "Failed to create the GLFW window")))
+
+  (swap! global assoc
+         :keyCallback
+         (proxy [GLFWKeyCallback] []
+           (invoke [window key scancode action mods]
+             (when (and (= key GLFW/GLFW_KEY_ESCAPE)
+                        (= action GLFW/GLFW_RELEASE))
+               (GLFW/glfwSetWindowShouldClose (:window @global) true)))))
+  (GLFW/glfwSetKeyCallback (:window @global) (:keyCallback @global))
+
+  (let [vidmode (GLFW/glfwGetVideoMode (GLFW/glfwGetPrimaryMonitor))]
+    (GLFW/glfwSetWindowPos
+     (:window @global)
+     (/ (- (.width vidmode) width) 2)
+     (/ (- (.height vidmode) height) 2))
+    (GLFW/glfwMakeContextCurrent (:window @global))
+    (GLFW/glfwSwapInterval 1)
+    (GLFW/glfwShowWindow (:window @global))))
+
 (defn init
-  [{specified-window :window
-    height :height
-    width :width
-    title :title
-    global :global}]
+  [global]
   ; setup an error callback. The default implementation
   ; will print the error message in System.err.
-  (->> (GLFWErrorCallback/createPrint System/err)
-       (swap! global assoc :errorCallback)
-       (GLFW/glfwSetErrorCallback))
+  (swap! global assoc
+         :errorCallback
+         (GLFWErrorCallback/createPrint System/err))
+  (GLFW/glfwSetErrorCallback (:errorCallback @global))
   ; initialize GLFW. Most GLFW functions will not work before doing this.
   (when-not (GLFW/glfwInit)
     (throw (IllegalStateException. "Unable to initialize GLFW")))
   (configure-GLFW)
-  (let [primary-monitor (GLFW/glfwGetPrimaryMonitor)
-        vidmode (GLFW/glfwGetVideoMode primary-monitor)]
-    (as->
-     (GLFW/glfwCreateWindow
-      (cond
-        (when-not (nil? specified-window))
-        nil
-        (when-not (nil? width))
-        width
-        :else
-        (.width  vidmode))
-      (cond
-        (when-not (nil? specified-window))
-        nil
-        (when-not (nil? height))
-        height
-        :else
-        (.height vidmode))
-      title
-      (cond
-        (when-not (nil? specified-window))
-        specified-window
-        (when-not (and (nil? width) (nil? height)))
-        nil
-        :else
-        primary-monitor)
-        ; nil it's shared-window, that don't implemented            
-      nil) $
-      (swap! global assoc :window $)
-      (when (nil? $)
-        (throw (RuntimeException. "Failed to create the GLFW window")))))
+  (let [monitor (GLFW/glfwGetPrimaryMonitor)
+        vidmode (GLFW/glfwGetVideoMode monitor)
+        width   (.width  vidmode)
+        height  (.height vidmode)]
+    (swap! global assoc
+           :width width
+           :height height
+           :title (:title global)
+           :delta-time (System/currentTimeMillis)
+           :window (GLFW/glfwCreateWindow 500 500 (:title global) nil 0))
+    (when (= (:window @global) nil)
+      (throw (RuntimeException. "Failed to create the GLFW window"))))
   ; i don't think that is realy need
   ; but dont who to implement this correctly
   (swap! global assoc
@@ -80,10 +99,6 @@
   ^{:doc
     "Destroy specifited window
      :global engine.utils.vars.global-template"}
-  [{keyCallback :keyCallback
-    errorCallback :errorCallback
-    window :window}]
-  (.free keyCallback)
-  (.free errorCallback)
+  [{window :window}]
   (GLFW/glfwDestroyWindow window)
   (GLFW/glfwTerminate))
