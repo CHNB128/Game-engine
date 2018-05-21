@@ -33,10 +33,10 @@
                 1.0)
   (GL11/glMatrixMode GL11/GL_MODELVIEW))
 
-(defn update-delta-time [global]
+(defmacro update-delta-time [global]
   (swap! global assoc :delta-time (System/currentTimeMillis)))
 
-(defn init
+(defmacro init
   [global]
   (init-gl global))
 
@@ -46,4 +46,5 @@
   (GL11/glClear
    (bit-or GL11/GL_COLOR_BUFFER_BIT GL11/GL_DEPTH_BUFFER_BIT))
   ; swap the color buffers
-  (GLFW/glfwSwapBuffers (:window @global)))
+  (GLFW/glfwSwapBuffers (:window @global))
+  (update-delta-time global))
