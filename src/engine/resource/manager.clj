@@ -2,4 +2,5 @@
 
 (defn init
   [global resources]
-  (swap! global assoc :resources resources))
+  (throw (Exception. "Method not yet implemented")))
+

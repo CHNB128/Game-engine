@@ -1,4 +1,4 @@
-(ns engine.game-play.scene)
+(ns engine.level.scene)
 
 (defonce scene-template
   {:resources nil
