@@ -1,4 +1,6 @@
-(ns engine.level.3D.load-model)
+(ns engine.level.3D.load-model
+  (:import)
+  (org.lwjgl.assimp ALFileIO))
 
 (defn load-model
   [path-to-model]
