@@ -72,10 +72,10 @@
   ; (swap! global dissoc )
 
 (defn load-audio
-  [global path-to-audio-file])
+  [global path-to-audio-file]
   (let [; Allocate space to store return information from the function
         stack 
-        (MemoryStack/stackPush])
+        (MemoryStack/stackPush)
         channels-buffer 
         (.mallocInt stack 1)
         sample-rate-buffer 
@@ -105,8 +105,9 @@
         ; Free the memory allocated by STB
         _ (free raw-buffer)
         *source (AL/alGenSources)
-        _ (AL/alSourcei *source AL/AL_BUFFER *buffer)
-    (-> audio-template)
-      (assoc :source *source)
-      (assoc :buffer *buffer)
+        _ (AL/alSourcei *source AL/AL_BUFFER *buffer)]
+    (setup-audio global
+      (-> audio-template
+        (assoc :source *source)
+        (assoc :buffer *buffer)))))
 
