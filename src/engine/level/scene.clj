@@ -1,8 +1,7 @@
 (ns engine.level.scene)
 
-(defonce scene-template
-  {:resources nil
-   :loop-fn nil})
+; TODO: rewrite
+
 
 (defn add-scene
   [global scene-name scene-object]

@@ -21,8 +21,7 @@
     :width 0}
    :title "none"
    :delta-time 0
-   :current-scene nil
-   :scenes nil
+   :scene nil
    :resources nil
    :main-loop nil
    :mouse-buffer
