@@ -33,10 +33,10 @@
                 1.0)
   (GL11/glMatrixMode GL11/GL_MODELVIEW))
 
-(defmacro update-delta-time [global]
+(defn update-delta-time [global]
   (swap! global assoc :delta-time (System/currentTimeMillis)))
 
-(defmacro init
+(defn init
   [global]
   (init-gl global))
 
