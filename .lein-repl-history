@@ -247,3 +247,59 @@ long
 (conj [1 2 3] 4)
 (def *a 11)
 *a
+(use :reload 'engine.audio.core)
+(use :reload 'engine.sound.core)
+global
+(use :reload 'engine.sound.core)
+(init {})
+*e
+(init {})
+*e
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(init {})
+(use :reload 'engine.sound.core)
+(import 'java.nio.IntBuffer)
+(java.nio.IntBuffer 0)
+(java.nio.IntBuffer. 0)
+\
+(java.nio.IntBuffer.)
+(java.nio.IntBuffer. *e)
+*e
+(use :reload 'engine.sound.core)
+(init {})
+(nio
+)
+nio
+/int-buffer
+int-buffer
+/int-buffer
+/
+(/ 0)
+(use 'nio.core)
+int-buffer
+(int-buffer)
+(int-buffer 0)
+(import 'java.util.Date)
+date
+(java.util.Date.)
+(import 'java.nio.IntBuffer)
+(java.nio.IntBuffer)
+(java.nio.IntBuffer. 0)
+(java.nio.IntBuffer. (int 0))
+(java.nio.IntBuffer.)

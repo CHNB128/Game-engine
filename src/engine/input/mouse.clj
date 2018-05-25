@@ -1,6 +1,15 @@
 (ns engine.input.mouse
   (:import
+   (org.lwjgl BufferUtils)
    (org.lwjgl.glfw GLFW)))
+
+(defonce mouse-template
+  {:x (BufferUtils/createDoubleBuffer 1)
+   :y (BufferUtils/createDoubleBuffer 1)})
+
+(defn init
+  [global]
+  (swap! global assoc :mouse mouse-template))
 
 (defn update-mouse-position
   ^{:doc "Resive :globasl objetc"}

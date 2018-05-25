@@ -2,7 +2,20 @@
   (:import
    (org.lwjgl BufferUtils)
    (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
+
 ; TODO: rewrite
+
+(defonce window-template
+  {:errorCallback nil
+   :keyCallback nil
+   :window nil
+   :height 0
+   :width 0
+   :title "none"})
+
+(defn init
+  [global]
+  (swap! global assoc :window window-template))
 
 (defn configure-GLFW
   []
