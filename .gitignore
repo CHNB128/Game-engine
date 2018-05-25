@@ -1,3 +1,4 @@
 /target
 .vscode
 .nrepl-port
+.lein-repl-history

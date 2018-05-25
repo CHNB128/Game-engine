@@ -26,7 +26,7 @@
         listener
         (do nil)
         context
-        (let [attributes (nio/int-buffer 0)]
+        (let [attributes (java.nio.IntBuffer/allocate 0)]
           (ALC10/alcCreateContext
            device
            attributes))
