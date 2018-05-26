@@ -14,11 +14,12 @@
   {:delta-time 0})
 
 (defn init
-  [{:keys [height width title]}]
+  ^{:doc "Resived window-params as {:title :height :width :external-monitor}"}
+  [window-params]
   (-> (atom global-template)
       (mouse/init)
       (sound/init)
-      (window/init {:height height :width width :title title})
+      (window/init window-params)
       (render/init)))
 
 (defn loop!

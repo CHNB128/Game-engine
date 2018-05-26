@@ -23,7 +23,7 @@
   (GLFW/glfwWindowHint GLFW/GLFW_RESIZABLE GLFW/GLFW_TRUE))
 
 (defn init
-  [global {:keys [height width title]}]
+  [global {:keys [height width title external-monitor]}]
   (swap! global assoc :window window-template)
   ; setup an error callback. The default implementation
   ; will print the error message in System.err.
@@ -38,21 +38,28 @@
     (throw (IllegalStateException. "Unable to initialize GLFW")))
   (configure-GLFW)
 
-  (let [monitor
-        (GLFW/glfwGetPrimaryMonitor)
-        vidmode
-        (GLFW/glfwGetVideoMode monitor)
-        window-width
-        (or width (.width  vidmode))
-        window-height
-        (or height (.height vidmode))
-        window
-        (GLFW/glfwCreateWindow
-         window-width
-         window-height
-         title
-         (if (some nil? [width height]) monitor nil)
-         0)]
+  (let [window (atom nil)]
+    (cond
+      (some nil? [width height])
+      (swap! window (GLFW/glfwCreateWindow width height title 0 0))
+      (when external-monitor)
+      (let [vidmode
+            (GLFW/glfwGetVideoMode external-monitor)
+            width
+            (.width vidmode)
+            height
+            (.height vidmode)]
+        (swap! window (GLFW/glfwCreateWindow width height title 0 external-monitor)))
+      :else
+      (let [monitor
+            (GLFW/glfwGetPrimaryMonitor)
+            vidmode
+            (GLFW/glfwGetVideoMode monitor)
+            width
+            (.width  vidmode)
+            height
+            (.height vidmode)]
+        (swap! window (GLFW/glfwCreateWindow width height title monitor 0))))
     (when-not window
       (throw (RuntimeException. "Failed to create the GLFW window")))
     (swap! global assoc-in [:window :pointer] window))
@@ -65,28 +72,30 @@
                            (= action GLFW/GLFW_RELEASE)))
                (GLFW/glfwSetWindowShouldClose (:window @global) true)))))
   (GLFW/glfwSetKeyCallback (:window @global) (:keyCallback @global))
-
-  ; Make the OpenGL context current
   (GLFW/glfwMakeContextCurrent
    (-> @global
        (:window)
        (:pointer)))
-  ; Enable v-sync
+   ; Enable v-sync
   (GLFW/glfwSwapInterval 1)
+  (GLFW/glfwShowWindow
+   (-> @global
+       (:window)
+       (:pointer)))
   (identity global))
 
 (defn show
   ^{:doc "Make window visible"}
-  [global]
-  (GLFW/glfwShowWindow
-   (-> @global
-       (:window)
-       (:pointer))))
+  [global])
+  ; Make the OpenGL context current
 
 (defn close
   ^{:doc
     "Destroy specifited window
      :global engine.utils.vars.global-template"}
-  [{window :window}]
-  (GLFW/glfwDestroyWindow window)
+  [global]
+  (GLFW/glfwDestroyWindow
+   (-> @global
+       (:window)
+       (:pointer)))
   (GLFW/glfwTerminate))
