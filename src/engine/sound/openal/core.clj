@@ -1,16 +1,16 @@
-(ns engine.sound.core
+(ns engine.sound.openal.core
   (:import
    (org.lwjgl.openal AL10 ALC10 ALC AL)
    (org.lwjgl.system MemoryStack)
    (org.lwjgl.stb STBVorbis)
-   (org.lwjgl.system.libc LibCStdlib))
-  (:require [nio.core :as nio]))
-(defonce audio-template
+   (org.lwjgl.system.libc LibCStdlib)))
+
+(defonce sound-template
   {:device nil
    :context nil
    :listener nil})
 
-(defonce sound-template
+(defonce single-sound-template
   {:name nil
    :buffer nil
    :source nil})
@@ -22,25 +22,25 @@
         (ALC10/alcGetString 0 ALC10/ALC_DEVICE_SPECIFIER)
         device
         (ALC10/alcOpenDevice device-default-name)
-        _ (prn device)
         listener
         (do nil)
         context
-        (let [attributes (java.nio.IntBuffer/allocate 0)]
+        (let [attributes (java.nio.IntBuffer/allocate 1)]
           (ALC10/alcCreateContext
            device
            attributes))
         _ (ALC10/alcMakeContextCurrent context)]
-    (as-> audio-template $
+    (as-> sound-template $
       (assoc $ :device device)
       (assoc $ :context context)
-      (swap! global assoc :audio $))))
+      (swap! global assoc :sound $)))
+  (identity global))
 
 ; :deprecated    
 ; (defn check
 ;   [global]
 ;   (let [device
-;         (-> @global (:audio) (:device))
+;         (-> @global (:sound) (:device))
 ;         alCapabilities
 ;         (AL/createCapabilities
 ;          (ALC/createCapabilities device))]
@@ -51,17 +51,17 @@
   [global]
   (ALC10/alcDestroyContext
    (-> @global
-       (:audio)
+       (:sound)
        (:context)))
   (ALC10/alcCloseDevice
    (-> @global
-       (:audio)
+       (:sound)
        (:device))))
 
 (defn setup-audio
   [global audio]
-  (swap! global assoc-in [:level :audio]
-         (conj (-> @global (:level) (:audio)) audio)))
+  (swap! global assoc-in [:level :sound]
+         (conj (-> @global (:level) (:sound)) audio)))
 
 (defn play-audio
   [audio]
@@ -74,9 +74,9 @@
 
 (defn delete-audio
   [global name]
-  (AL10/alDeleteSources (-> @global (:audio) (:source)))
-  (AL10/alDeleteBuffers (-> @global (:audio) (:buffer)))
-  (swap! global update-in [:audio] dissoc name))
+  (AL10/alDeleteSources (-> @global (:sound) (:source)))
+  (AL10/alDeleteBuffers (-> @global (:sound) (:buffer)))
+  (swap! global update-in [:sound] dissoc name))
 
 (defn load-audio
   [global name path-to-audio-file]
@@ -116,7 +116,7 @@
         _ (AL10/alSourcei *source AL10/AL_BUFFER *buffer)]
     (setup-audio
      global
-     (-> audio-template
+     (-> sound-template
          (assoc :name name)
          (assoc :source *source)
          (assoc :buffer *buffer)))))

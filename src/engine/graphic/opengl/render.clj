@@ -1,4 +1,4 @@
-(ns engine.graphic.render
+(ns engine.graphic.opengl.render
   (:import
    (org.lwjgl BufferUtils)
    (org.lwjgl.opengl GL GL11)
@@ -38,7 +38,8 @@
 
 (defn init
   [global]
-  (init-gl global))
+  (init-gl global)
+  (identity global))
 
 (defn rerender
   [global]

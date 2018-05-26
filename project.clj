@@ -75,7 +75,6 @@
   (into ;; Add your non-LWJGL dependencies here
    '[[org.clojure/clojure "1.8.0"]
      [prismatic/schema "1.1.9"]
-     [nio "1.0.3"]
      [net.mikera/vectorz-clj "0.47.0"]]
    (lwjgl-deps-with-natives)))
 

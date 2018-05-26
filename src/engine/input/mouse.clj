@@ -9,7 +9,8 @@
 
 (defn init
   [global]
-  (swap! global assoc :mouse mouse-template))
+  (swap! global assoc :mouse mouse-template)
+  (identity global))
 
 (defn update-mouse-position
   ^{:doc "Resive :globasl objetc"}

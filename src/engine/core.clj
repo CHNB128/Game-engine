@@ -1,12 +1,10 @@
 (ns engine.core
-  (:import
-   (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback))
+  (:import (org.lwjgl.glfw GLFW))
   (:require [schema.core :as s]
             [engine.window :as window]
-            [engine.graphic.render :as render]
-            [engine.sound.core :as sound]
+            [engine.graphic.opengl.render :as render]
+            [engine.sound.openal.core :as sound]
             [engine.input.mouse :as mouse]
-            [engine.sound.core :as sound]
             [engine.resource.manager :as resource-manager]))
 
 (defonce global-template
@@ -16,19 +14,16 @@
   {:delta-time 0})
 
 (defn init
-  [{remote-window :remote-window
-    title :title
-    height :height
-    width :width}]
+  [{:keys [height width title]}]
   (-> (atom global-template)
       (mouse/init)
       (sound/init)
-      (window/init)
+      (window/init {:height height :width width :title title})
       (render/init)))
 
 (defn loop!
   [global]
-  (window/init-windowed global 500 500 "test")
+  ; (window/init-windowed global 500 500 "test")
   (while (not (GLFW/glfwWindowShouldClose (:window @global)))
     (mouse/update-mouse-position global)
     ((:main-loop @global) global)
