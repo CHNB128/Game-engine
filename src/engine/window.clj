@@ -1,7 +1,7 @@
 (ns engine.window
   (:import
-   (org.lwjgl BufferUtils)
-   (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
+    (org.lwjgl BufferUtils)
+    (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
 
 ; TODO: rewrite
 
@@ -31,57 +31,49 @@
         (GLFWErrorCallback/createPrint System/err)]
     (GLFW/glfwSetErrorCallback error-callback)
     (swap! global assoc-in [:window :error-callback]
-           error-callback))
+      error-callback))
 
   ; initialize GLFW. Most GLFW functions will not work before doing this.
   (when-not (GLFW/glfwInit)
     (throw (IllegalStateException. "Unable to initialize GLFW")))
   (configure-GLFW)
 
-  (let [window (atom nil)]
-    (cond
-      (some nil? [width height])
-      (swap! window (GLFW/glfwCreateWindow width height title 0 0))
-      (when external-monitor)
-      (let [vidmode
-            (GLFW/glfwGetVideoMode external-monitor)
-            width
-            (.width vidmode)
-            height
-            (.height vidmode)]
-        (swap! window (GLFW/glfwCreateWindow width height title 0 external-monitor)))
-      :else
-      (let [monitor
-            (GLFW/glfwGetPrimaryMonitor)
-            vidmode
-            (GLFW/glfwGetVideoMode monitor)
-            width
-            (.width  vidmode)
-            height
-            (.height vidmode)]
-        (swap! window (GLFW/glfwCreateWindow width height title monitor 0))))
+  (let [window
+        (GLFW/glfwCreateWindow width height title 0 0)]
     (when-not window
       (throw (RuntimeException. "Failed to create the GLFW window")))
     (swap! global assoc-in [:window :pointer] window))
 
   (swap! global assoc-in
-         [:window :key-callback]
-         (proxy [GLFWKeyCallback] []
-           (invoke [window key scancode action mods]
-             (when (and (= key GLFW/GLFW_KEY_ESCAPE
-                           (= action GLFW/GLFW_RELEASE)))
-               (GLFW/glfwSetWindowShouldClose (:window @global) true)))))
-  (GLFW/glfwSetKeyCallback (:window @global) (:keyCallback @global))
+    [:window :key-callback]
+    (proxy [GLFWKeyCallback] []
+      (invoke [window key scancode action mods]
+        (when
+          (and
+            (= key GLFW/GLFW_KEY_ESCAPE)
+            (= action GLFW/GLFW_RELEASE))
+          (GLFW/glfwSetWindowShouldClose
+            (-> @global
+              (:window)
+              (:pointer))
+            true)))))
+  (GLFW/glfwSetKeyCallback
+    (-> @global
+      (:window)
+      (:pointer))
+    (-> @global
+      (:window)
+      (:key-callback)))
   (GLFW/glfwMakeContextCurrent
-   (-> @global
-       (:window)
-       (:pointer)))
-   ; Enable v-sync
+    (-> @global
+      (:window)
+      (:pointer)))
+    ; Enable v-sync
   (GLFW/glfwSwapInterval 1)
   (GLFW/glfwShowWindow
-   (-> @global
-       (:window)
-       (:pointer)))
+    (-> @global
+      (:window)
+      (:pointer)))
   (identity global))
 
 (defn show
@@ -89,13 +81,15 @@
   [global])
   ; Make the OpenGL context current
 
+
 (defn close
   ^{:doc
     "Destroy specifited window
      :global engine.utils.vars.global-template"}
   [global]
   (GLFW/glfwDestroyWindow
-   (-> @global
-       (:window)
-       (:pointer)))
+    (-> @global
+      (:window)
+      (:pointer)))
   (GLFW/glfwTerminate))
+
