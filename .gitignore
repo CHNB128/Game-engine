@@ -2,4 +2,4 @@
 .vscode
 .nrepl-port
 .lein-repl-history
-.log
+*.log
