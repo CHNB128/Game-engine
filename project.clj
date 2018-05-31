@@ -11,7 +11,7 @@
   "Return a complete vector of jvm-opts for the current os."
   (let [os (leiningen.core.eval/get-os)]
     (vec (set (concat (get JVM-OPTS :common)
-                      (get JVM-OPTS os))))))
+                (get JVM-OPTS os))))))
 
 (def LWJGL_NS "org.lwjgl")
 
@@ -62,21 +62,21 @@
 
 (defn lwjgl-deps-with-natives []
   (apply concat
-         (for [m LWJGL_MODULES]
-           (let [prefix [(symbol LWJGL_NS m) LWJGL_VERSION]]
-             (into [prefix]
-                   (if (no-natives? m)
-                     []
-                     (for [p LWJGL_PLATFORMS]
-                       (into prefix [:classifier (str "natives-" p)
-                                     :native-prefix ""]))))))))
+    (for [m LWJGL_MODULES]
+      (let [prefix [(symbol LWJGL_NS m) LWJGL_VERSION]]
+        (into [prefix]
+          (if (no-natives? m)
+            []
+            (for [p LWJGL_PLATFORMS]
+              (into prefix [:classifier (str "natives-" p)
+                            :native-prefix ""]))))))))
 
 (def all-dependencies
   (into ;; Add your non-LWJGL dependencies here
-   '[[org.clojure/clojure "1.8.0"]
-     [prismatic/schema "1.1.9"]
-     [net.mikera/vectorz-clj "0.47.0"]]
-   (lwjgl-deps-with-natives)))
+    '[[org.clojure/clojure "1.8.0"]
+      [prismatic/schema "1.1.9"]
+      [net.mikera/vectorz-clj "0.47.0"]]
+    (lwjgl-deps-with-natives)))
 
 (defproject engine "0.4.0"
   :description "FIXME"

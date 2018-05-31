@@ -1,7 +1,7 @@
 (ns engine.clj.clj.window
   (:import
-   (org.lwjgl BufferUtils)
-   (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
+    (org.lwjgl BufferUtils)
+    (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
 
 ; TODO: rewrite
 
@@ -31,7 +31,7 @@
         (GLFWErrorCallback/createPrint System/err)]
     (GLFW/glfwSetErrorCallback error-callback)
     (swap! global assoc-in [:window :error-callback]
-           error-callback))
+      error-callback))
 
   ; initialize GLFW. Most GLFW functions will not work before doing this.
   (when-not (GLFW/glfwInit)
@@ -79,15 +79,15 @@
        (:window)
        (:keyCallback)))
   (GLFW/glfwMakeContextCurrent
-   (-> @global
-       (:window)
-       (:pointer)))
-   ; Enable v-sync
+    (-> @global
+      (:window)
+      (:pointer)))
+    ; Enable v-sync
   (GLFW/glfwSwapInterval 1)
   (GLFW/glfwShowWindow
-   (-> @global
-       (:window)
-       (:pointer)))
+    (-> @global
+      (:window)
+      (:pointer)))
   (identity global))
 
 (defn show
@@ -95,13 +95,15 @@
   [global])
   ; Make the OpenGL context current
 
+
 (defn close
   ^{:doc
     "Destroy specifited window
      :global engine.utils.vars.global-template"}
   [global]
   (GLFW/glfwDestroyWindow
-   (-> @global
-       (:window)
-       (:pointer)))
+    (-> @global
+      (:window)
+      (:pointer)))
   (GLFW/glfwTerminate))
+

@@ -1,8 +1,8 @@
 (ns engine.clj.graphic.opengl.render
   (:import
-   (org.lwjgl BufferUtils)
-   (org.lwjgl.opengl GL GL11)
-   (org.lwjgl.glfw GLFW)))
+    (org.lwjgl BufferUtils)
+    (org.lwjgl.opengl GL GL11)
+    (org.lwjgl.glfw GLFW)))
 
 (defn init-gl
   [global]
@@ -45,7 +45,7 @@
   [global]
   ; clear the framebuffer
   (GL11/glClear
-   (bit-or GL11/GL_COLOR_BUFFER_BIT GL11/GL_DEPTH_BUFFER_BIT))
+    (bit-or GL11/GL_COLOR_BUFFER_BIT GL11/GL_DEPTH_BUFFER_BIT))
   ; swap the color buffers
   (GLFW/glfwSwapBuffers (:window @global))
   (update-delta-time global))
