@@ -1,4 +1,4 @@
-(ns engine.beta
+(ns engine.clj.beta
   (:require [clojure.pprint :as pprint])
   (:import (java.nio ByteBuffer FloatBuffer)
            (org.lwjgl BufferUtils)

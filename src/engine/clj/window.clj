@@ -1,4 +1,4 @@
-(ns engine.window
+(ns engine.clj.clj.window
   (:import
    (org.lwjgl BufferUtils)
    (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
@@ -40,8 +40,8 @@
 
   (let [window (atom nil)]
     (cond
-      (some nil? [width height])
-      (swap! window (GLFW/glfwCreateWindow width height title 0 0))
+      (not (some nil? [width height]))
+      (reset! window (GLFW/glfwCreateWindow width height title 0 0))
       (when external-monitor)
       (let [vidmode
             (GLFW/glfwGetVideoMode external-monitor)
@@ -49,7 +49,7 @@
             (.width vidmode)
             height
             (.height vidmode)]
-        (swap! window (GLFW/glfwCreateWindow width height title 0 external-monitor)))
+        (reset! window (GLFW/glfwCreateWindow width height title 0 external-monitor)))
       :else
       (let [monitor
             (GLFW/glfwGetPrimaryMonitor)
@@ -59,10 +59,10 @@
             (.width  vidmode)
             height
             (.height vidmode)]
-        (swap! window (GLFW/glfwCreateWindow width height title monitor 0))))
-    (when-not window
+        (reset! window (GLFW/glfwCreateWindow width height title monitor 0))))
+    (when-not @window
       (throw (RuntimeException. "Failed to create the GLFW window")))
-    (swap! global assoc-in [:window :pointer] window))
+    (swap! global assoc-in [:window :pointer] @window))
 
   (swap! global assoc-in
          [:window :key-callback]
@@ -71,7 +71,13 @@
              (when (and (= key GLFW/GLFW_KEY_ESCAPE
                            (= action GLFW/GLFW_RELEASE)))
                (GLFW/glfwSetWindowShouldClose (:window @global) true)))))
-  (GLFW/glfwSetKeyCallback (:window @global) (:keyCallback @global))
+  (GLFW/glfwSetKeyCallback
+   (-> @global
+       (:window)
+       (:pointer))
+   (-> @global
+       (:window)
+       (:keyCallback)))
   (GLFW/glfwMakeContextCurrent
    (-> @global
        (:window)

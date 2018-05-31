@@ -1,4 +1,4 @@
-(ns engine.input.keyboard
+(ns engine.clj.input.keyboard
   (:import
    (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
 

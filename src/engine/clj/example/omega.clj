@@ -1,4 +1,4 @@
-(ns engine.example.omega
+(ns engine.clj.example.omega
   (:import
    (java.nio FloatBuffer IntBuffer)
    (java.util List)

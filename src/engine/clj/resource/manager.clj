@@ -1,4 +1,4 @@
-(ns engine.resource.manager)
+(ns engine.clj.resource.manager)
 
 ; TODO: implement
 

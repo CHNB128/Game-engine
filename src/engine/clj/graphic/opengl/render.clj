@@ -1,4 +1,4 @@
-(ns engine.graphic.opengl.render
+(ns engine.clj.graphic.opengl.render
   (:import
    (org.lwjgl BufferUtils)
    (org.lwjgl.opengl GL GL11)
@@ -24,13 +24,13 @@
   (GL11/glDepthFunc GL11/GL_LEQUAL)
   ; Nice perspective corrections
   (GL11/glHint GL11/GL_PERSPECTIVE_CORRECTION_HINT GL11/GL_NICEST)
-  (GL11/glMatrixMode GL11/GL_PROJECTION)
-  (GL11/glOrtho 0.0
-                (:width @global)
-                (:height @global)
-                0.0 ;; Y is 0 at the top to match mouse coords
-                -1.0
-                1.0)
+  ; (GL11/glMatrixMode GL11/GL_PROJECTION)
+  ; (GL11/glOrtho 0.0
+  ;               (:width @global)
+  ;               (:height @global)
+  ;               0.0 ;; Y is 0 at the top to match mouse coords
+  ;               -1.0
+  ;               1.0)
   (GL11/glMatrixMode GL11/GL_MODELVIEW))
 
 (defn update-delta-time [global]

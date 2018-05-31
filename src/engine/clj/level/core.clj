@@ -1,4 +1,4 @@
-(ns engine.level.core
+(ns engine.clj.level.core
   (:import
    (java.util.Objects)
    (org.lwjgl.assimp Assimp)))

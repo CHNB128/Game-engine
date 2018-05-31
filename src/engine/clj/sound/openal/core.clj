@@ -1,4 +1,4 @@
-(ns engine.sound.openal.core
+(ns engine.clj.sound.openal.core
   (:import
    (org.lwjgl.openal AL10 ALC10 ALC AL)
    (org.lwjgl.system MemoryStack)

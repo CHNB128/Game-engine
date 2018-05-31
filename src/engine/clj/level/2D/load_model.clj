@@ -1,4 +1,4 @@
-(ns engine.level.2D.load-model)
+(ns engine.clj.level.2D.load-model)
 
 (defn load-model
   [path-to-model]

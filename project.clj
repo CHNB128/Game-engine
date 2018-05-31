@@ -85,5 +85,6 @@
             :url "FIXME"}
   :dependencies ~all-dependencies
   :min-lein-version "2.1.0"
+  :java-source-path ["src/engine/java"]
   :jvm-opts ^:replace ~(jvm-opts)
   :main engine.core)

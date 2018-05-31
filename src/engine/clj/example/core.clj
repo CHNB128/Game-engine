@@ -1,4 +1,4 @@
-(ns engine.core
+(ns engine.clj.core
   (:require [engine.alpha :as alpha]
             [engine.beta  :as beta]
             [engine.gamma :as gamma])

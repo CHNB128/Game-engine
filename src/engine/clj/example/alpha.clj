@@ -1,4 +1,4 @@
-(ns engine.alpha
+(ns engine.clj.alpha
   (:import (org.lwjgl.opengl GL GL11)
            (org.lwjgl.glfw GLFW GLFWErrorCallback GLFWKeyCallback)))
 

@@ -1,4 +1,4 @@
-(ns engine.level.scene)
+(ns engine.clj.level.scene)
 
 ; TODO: rewrite
 

@@ -1,4 +1,4 @@
-(ns engine.3d
+(ns engine.clj.3d
   (:import
    (org.lwjgl BufferUtils)
    (org.lwjgl.opengl GL GL11)
